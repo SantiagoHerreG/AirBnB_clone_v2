@@ -43,6 +43,24 @@ class HBNBCommand(cmd.Cmd):
                 raise SyntaxError()
             my_list = line.split(" ")
             obj = eval("{}()".format(my_list[0]))
+
+            for parameters in my_list:
+
+                try:
+                    param_list = parameters.split("=")
+                    key_name = param_list[0]
+
+                    if "\"" == param_list[1][0]:
+                        value = param_list[1].replace("_", " ")[1:-1]
+                    elif "." in param_list[1]:
+                        value = float(param_list[1])
+                    else:
+                        value = int(param_list[1])
+
+                    setattr(obj, key_name, value)
+                except:
+                    continue
+
             obj.save()
             print("{}".format(obj.id))
         except SyntaxError:

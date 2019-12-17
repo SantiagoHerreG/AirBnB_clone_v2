@@ -89,6 +89,38 @@ class TestConsole(unittest.TestCase):
             self.assertEqual(
                 "[[User]", f.getvalue()[:7])
 
+    def test_create_args(self):
+        """ Tests the new create updation to handle parameters
+        """
+        with patch('sys.stdout', new=StringIO()) as f:
+            self.consol.onecmd("create State name=\"California\"")
+        with patch('sys.stdout', new=StringIO()) as f:
+            self.consol.onecmd("all State")
+            self.assertIn("\'name\': \'California\'", f.getvalue())
+
+    def test_create_args_values(self):
+        """ Tests the new create with different value parameters
+        """
+        with patch('sys.stdout', new=StringIO()) as f:
+            self.consol.onecmd("create Place name=\"Texas_house\"\
+ number_rooms=2 latitude=37.773972")
+        with patch('sys.stdout', new=StringIO()) as f:
+            self.consol.onecmd("all Place")
+            self.assertIn("\'name\': \'Texas house\'", f.getvalue())
+            self.assertIn("\'number_rooms\': 2", f.getvalue())
+            self.assertIn("\'latitude\': 37.773972", f.getvalue())
+
+    def test_create_args_error_handling(self):
+        """ Tests the new create updation to handle parameters
+        """
+        with patch('sys.stdout', new=StringIO()) as f:
+            self.consol.onecmd("create Place name=\"Star_house\"\
+ latitude=10.error latitude=10.773972")
+        with patch('sys.stdout', new=StringIO()) as f:
+            self.consol.onecmd("all Place")
+            self.assertIn("\'name\': \'Star house\'", f.getvalue())
+            self.assertIn("\'latitude\': 10.773972", f.getvalue())
+
     def test_show(self):
         """Test show command inpout"""
         with patch('sys.stdout', new=StringIO()) as f:
@@ -133,7 +165,7 @@ class TestConsole(unittest.TestCase):
             self.consol.onecmd("all asdfsdfsd")
             self.assertEqual("** class doesn't exist **\n", f.getvalue())
         with patch('sys.stdout', new=StringIO()) as f:
-            self.consol.onecmd("all State")
+            self.consol.onecmd("all User")
             self.assertEqual("[]\n", f.getvalue())
 
     def test_update(self):
@@ -174,7 +206,7 @@ class TestConsole(unittest.TestCase):
             self.assertEqual(
                 "** class doesn't exist **\n", f.getvalue())
         with patch('sys.stdout', new=StringIO()) as f:
-            self.consol.onecmd("State.all()")
+            self.consol.onecmd("Amenity.all()")
             self.assertEqual("[]\n", f.getvalue())
 
     def test_z_count(self):
@@ -184,7 +216,7 @@ class TestConsole(unittest.TestCase):
             self.assertEqual(
                 "** class doesn't exist **\n", f.getvalue())
         with patch('sys.stdout', new=StringIO()) as f:
-            self.consol.onecmd("State.count()")
+            self.consol.onecmd("Amenity.count()")
             self.assertEqual("0\n", f.getvalue())
 
     def test_z_show(self):

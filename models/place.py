@@ -3,8 +3,17 @@
 import models
 from models.base_model import BaseModel, Base
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Float
+from sqlalchemy import Table
 from sqlalchemy.orm import relationship
 from models.review import Review
+
+metadata = Base.metadata
+place_amenity = Table('place_amenity', metadata,
+                      Column('place_id', String(60), ForeignKey('places.id'),
+                             primary_key=True, nullable=False),
+                      Column('amenity_id', String(60), ForeignKey('ameni\
+ties.id'),
+                             primary_key=True, nullable=False))
 
 
 class Place(BaseModel, Base):
@@ -36,7 +45,11 @@ class Place(BaseModel, Base):
     longitude = Column(Float, nullable=True)
     amenity_ids = []
 
-    reviews = relationship(Review, cascade="all,delete", backref="place")
+    reviews = relationship("Review", cascade="all,delete", backref="place")
+    amenities = relationship("Amenity",
+                             secondary=place_amenity,
+                             viewonly=False,
+                             backref="place_amenities")
 
     @property
     def reviews(self):
@@ -48,5 +61,22 @@ class Place(BaseModel, Base):
         for key, value in reviews_dict.items():
             if self.id == value.place_id:
                 new_dict[key] = value
-
         return new_dict
+
+    @property
+    def amenities(self):
+        """Getter of all amenities contained in the database
+        """
+        return self.amenity_ids
+
+    @amenities.setter
+    def amenities(self, obj):
+        """Handles new append method for saving amenities ids
+        """
+        if type(obj) == Amenity:
+            self.append(obj)
+
+        def append(self, obj):
+            """Method that appends
+            """
+            self.amenity_ids.append(obj)

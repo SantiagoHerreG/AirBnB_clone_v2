@@ -10,7 +10,6 @@ from models.city import City
 from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
-from shlex import split
 
 
 class HBNBCommand(cmd.Cmd):
@@ -148,7 +147,7 @@ class HBNBCommand(cmd.Cmd):
             if args[0] not in self.all_classes:
                 raise NameError()
             objects = storage.all(args[0])
-            for key in objects:
+            for key in objects.keys():
                 name = key.split('.')
                 if name[0] == args[0]:
                     my_list.append(objects[key])

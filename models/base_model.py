@@ -51,13 +51,6 @@ class BaseModel:
         Return:
             returns a string of class name, id, and dictionary
         """
-        if type(self).__name__ == 'User':
-            user_tmp = self.__dict__.copy()
-            password = user_tmp["password"]
-            res = hashlib.md5(password.encode())
-            user_tmp["password"] = res.hexdigest()
-            return "[{}] ({}) {}".format(
-                type(self).__name__, self.id, user_tmp)
         return "[{}] ({}) {}".format(
             type(self).__name__, self.id, self.__dict__)
 

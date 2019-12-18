@@ -4,6 +4,8 @@ import unittest
 import os
 from models.base_model import BaseModel
 import pep8
+from models.engine.file_storage import FileStorage
+import MySQLdb
 
 
 class TestBaseModel(unittest.TestCase):
@@ -47,12 +49,14 @@ class TestBaseModel(unittest.TestCase):
         self.assertTrue(hasattr(BaseModel, "__init__"))
         self.assertTrue(hasattr(BaseModel, "save"))
         self.assertTrue(hasattr(BaseModel, "to_dict"))
+        self.assertTrue(hasattr(BaseModel, "delete"))
 
     def test_init_BaseModel(self):
         """test if the base is an type BaseModel"""
         self.assertTrue(isinstance(self.base, BaseModel))
 
-    def test_save_BaesModel(self):
+    @unittest.skipIf(os.getenv("HBNB_TYPE_STORAGE") == "db", "Useless in SQL")
+    def test_save_BaseModel(self):
         """test if the save works"""
         self.base.save()
         self.assertNotEqual(self.base.created_at, self.base.updated_at)
@@ -64,6 +68,23 @@ class TestBaseModel(unittest.TestCase):
         self.assertIsInstance(base_dict['created_at'], str)
         self.assertIsInstance(base_dict['updated_at'], str)
 
+    def test_to_dict_deletes_a_key(self):
+        """The method deletes a unnecessary key
+        """
+        self.base._sa_instance_state = "new"
+        base_dict = self.base.to_dict()
+        self.assertTrue("_sa_instance_state" not in base_dict.keys())
+
+    @unittest.skipIf(os.getenv("HBNB_TYPE_STORAGE") == "db", "Useless in SQL")
+    def test_delete_in_fileStorage(self):
+        """Test for method delete when using FileStorage
+        """
+        storage = FileStorage()
+        obj = BaseModel()
+        storage.new(obj)
+        self.assertTrue(obj in storage._FileStorage__objects.values())
+        obj.delete()
+        self.assertTrue(obj not in storage._FileStorage__objects.values())
 
 if __name__ == "__main__":
     unittest.main()

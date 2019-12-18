@@ -57,13 +57,15 @@ class DBStorage:
                 res_list = list(self.__session.query(Amenity).all())
             if cls == "Review":
                 res_list = list(self.__session.query(Review).all())
-
         my_dict = {}
         for obj in res_list:
             class_name = type(obj).__name__
             key = class_name + "." + str(obj.id)
-            if obj._sa_instance_state:
-                del obj._sa_instance_state
+            try:
+                if obj._sa_instance_state:
+                    del obj._sa_instance_state
+            except:
+                pass
             my_dict[key] = obj
 
         return my_dict

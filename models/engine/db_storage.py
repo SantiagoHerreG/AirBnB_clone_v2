@@ -38,12 +38,12 @@ class DBStorage:
         """
         if cls is None:
             res_list = []
-            res_list.append(list(self.__session.query(User).all()))
-            res_list.append(list(self.__session.query(State).all()))
-            res_list.append(list(self.__session.query(Place).all()))
-            res_list.append(list(self.__session.query(City).all()))
-            res_list.append(list(self.__session.query(Amenity).all()))
-            res_list.append(list(self.__session.query(Review).all()))
+            res_list += self.__session.query(User).all()
+            res_list += self.__session.query(State).all()
+            res_list += self.__session.query(Place).all()
+            res_list += self.__session.query(City).all()
+            res_list += self.__session.query(Amenity).all()
+            res_list += self.__session.query(Review).all()
         else:
             if cls == "State":
                 res_list = list(self.__session.query(State).all())
@@ -57,15 +57,11 @@ class DBStorage:
                 res_list = list(self.__session.query(Amenity).all())
             if cls == "Review":
                 res_list = list(self.__session.query(Review).all())
+
         my_dict = {}
         for obj in res_list:
             class_name = type(obj).__name__
             key = class_name + "." + str(obj.id)
-            try:
-                if obj._sa_instance_state:
-                    del obj._sa_instance_state
-            except:
-                pass
             my_dict[key] = obj
 
         return my_dict

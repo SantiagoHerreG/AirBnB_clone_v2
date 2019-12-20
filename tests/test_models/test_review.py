@@ -3,6 +3,11 @@
 import unittest
 import os
 from models.review import Review
+from models.user import User
+from models.state import State
+from models.amenity import Amenity
+from models.place import Place
+from models.city import City
 from models.base_model import BaseModel
 import pep8
 
@@ -13,9 +18,36 @@ class TestReview(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """set up for test"""
+        cls.user = User()
+        cls.user.email = "11@c"
+        cls.user.password = "11@c"
+        cls.user.id = "4321-new"
+        cls.state = State()
+        cls.state.name = "CA"
+        cls.state.id = "004567"
+        cls.city = City()
+        cls.city.name = "LA"
+        cls.city.id = "1234-new"
+        cls.city.state_id = "004567"
+        cls.amenity = Amenity()
+        cls.amenity.name = "wifi"
+        cls.amenity.id = "1324-new"
+        cls.place = Place()
+        cls.place.city_id = "1234-new"
+        cls.place.user_id = "4321-new"
+        cls.place.id = "abcd"
+        cls.place.name = "Death Star"
+        cls.place.description = "UNLIMITED POWER!!!!!"
+        cls.place.number_rooms = 1000000
+        cls.place.number_bathrooms = 1
+        cls.place.max_guest = 607360
+        cls.place.price_by_night = 10
+        cls.place.latitude = 160.0
+        cls.place.longitude = 120.0
+        cls.place.amenity_ids = ["1324-new"]
         cls.rev = Review()
-        cls.rev.place_id = "4321-dcba"
-        cls.rev.user_id = "123-bca"
+        cls.rev.place_id = "abcd"
+        cls.rev.user_id = "4321-new"
         cls.rev.text = "The srongest in the Galaxy"
 
     @classmethod
@@ -61,6 +93,11 @@ class TestReview(unittest.TestCase):
 
     def test_save_Review(self):
         """test if the save works"""
+        self.state.save()
+        self.city.save()
+        self.user.save()
+        self.amenity.save()
+        self.place.save()
         self.rev.save()
         self.assertNotEqual(self.rev.created_at, self.rev.updated_at)
 

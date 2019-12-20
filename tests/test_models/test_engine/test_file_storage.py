@@ -60,9 +60,10 @@ class TestFileStorage(unittest.TestCase):
         state.id = 123455
         state.name = "California"
         storage.new(state)
-        key = state.__class__.__name__ + "." + str(state.id)
-        obj = storage.all(State)
-        self.assertIsNotNone(obj[key])
+        storage.save()
+        key = type(state).__name__ + "." + str(state.id)
+        obj = storage.all("State")
+        self.assertTrue(key in obj.keys())
         self.assertTrue(type(obj[key]) is State)
 
     def test_new(self):

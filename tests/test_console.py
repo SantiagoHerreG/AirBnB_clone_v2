@@ -72,7 +72,6 @@ class TestConsole(unittest.TestCase):
             self.consol.onecmd("quit")
             self.assertEqual('', f.getvalue())
 
-    @unittest.skipIf(os.getenv("HBNB_TYPE_STORAGE") == "db", "Useless in fs")
     def test_create(self):
         """Test create command inpout"""
         with patch('sys.stdout', new=StringIO()) as f:
@@ -84,7 +83,8 @@ class TestConsole(unittest.TestCase):
             self.assertEqual(
                 "** class doesn't exist **\n", f.getvalue())
         with patch('sys.stdout', new=StringIO()) as f:
-            self.consol.onecmd("create User")
+            self.consol.onecmd("create User email=\"1@com\"\
+ password=\"newpwd\"")
         with patch('sys.stdout', new=StringIO()) as f:
             self.consol.onecmd("all User")
             self.assertEqual(
@@ -99,32 +99,37 @@ class TestConsole(unittest.TestCase):
             self.consol.onecmd("all State")
             self.assertIn("\'name\': \'California\'", f.getvalue())
 
-    @unittest.skipIf(os.getenv("HBNB_TYPE_STORAGE") == "db", "Useless in fs")
     def test_create_args_values(self):
         """ Tests the new create with different value parameters
         """
         with patch('sys.stdout', new=StringIO()) as f:
+            self.consol.onecmd("create User email=\"1@com\"\
+ password=\"newpwd\" id=\"007\"")
+        with patch('sys.stdout', new=StringIO()) as f:
+            self.consol.onecmd("create State name=\"New York\"\
+ id=\"1234\"")
+        with patch('sys.stdout', new=StringIO()) as f:
+            self.consol.onecmd("create City name=\"New York\"\
+ state_id=\"1234\" id=\"1234\"")
+        with patch('sys.stdout', new=StringIO()) as f:
             self.consol.onecmd("create Place name=\"Texas_house\"\
- number_rooms=2 latitude=37.773972")
+ number_rooms=2 latitude=37.774 description=\"Lovely\" city_id=\"1234\"\
+ user_id=\"007\"")
         with patch('sys.stdout', new=StringIO()) as f:
             self.consol.onecmd("all Place")
             self.assertIn("\'name\': \'Texas house\'", f.getvalue())
             self.assertIn("\'number_rooms\': 2", f.getvalue())
-            self.assertIn("\'latitude\': 37.773972", f.getvalue())
+            self.assertIn("\'latitude\': 37.774", f.getvalue())
 
-    @unittest.skipIf(os.getenv("HBNB_TYPE_STORAGE") == "db", "Useless in fs")
     def test_create_args_error_handling(self):
         """ Tests the new create updation to handle parameters
         """
         with patch('sys.stdout', new=StringIO()) as f:
-            self.consol.onecmd("create Place name=\"Star_house\"\
- latitude=10.error latitude=10.773972")
+            self.consol.onecmd("create State name name=\"California\"")
         with patch('sys.stdout', new=StringIO()) as f:
-            self.consol.onecmd("all Place")
-            self.assertIn("\'name\': \'Star house\'", f.getvalue())
-            self.assertIn("\'latitude\': 10.773972", f.getvalue())
+            self.consol.onecmd("all State")
+            self.assertIn("\'name\': \'California\'", f.getvalue())
 
-    @unittest.skipIf(os.getenv("HBNB_TYPE_STORAGE") == "db", "Useless in fs")
     def test_show(self):
         """Test show command inpout"""
         with patch('sys.stdout', new=StringIO()) as f:
@@ -163,7 +168,6 @@ class TestConsole(unittest.TestCase):
             self.assertEqual(
                 "** no instance found **\n", f.getvalue())
 
-    @unittest.skipIf(os.getenv("HBNB_TYPE_STORAGE") == "db", "Useless in fs")
     def test_all(self):
         """Test all command inpout"""
         with patch('sys.stdout', new=StringIO()) as f:
@@ -173,7 +177,6 @@ class TestConsole(unittest.TestCase):
             self.consol.onecmd("all User")
             self.assertEqual("[]\n", f.getvalue())
 
-    @unittest.skipIf(os.getenv("HBNB_TYPE_STORAGE") == "db", "Useless in fs")
     def test_update(self):
         """Test update command inpout"""
         with patch('sys.stdout', new=StringIO()) as f:
@@ -205,7 +208,6 @@ class TestConsole(unittest.TestCase):
             self.assertEqual(
                 "** value missing **\n", f.getvalue())
 
-    @unittest.skipIf(os.getenv("HBNB_TYPE_STORAGE") == "db", "Useless in fs")
     def test_z_all(self):
         """Test alternate all command inpout"""
         with patch('sys.stdout', new=StringIO()) as f:
@@ -216,7 +218,6 @@ class TestConsole(unittest.TestCase):
             self.consol.onecmd("Amenity.all()")
             self.assertEqual("[]\n", f.getvalue())
 
-    @unittest.skipIf(os.getenv("HBNB_TYPE_STORAGE") == "db", "Useless in fs")
     def test_z_count(self):
         """Test count command inpout"""
         with patch('sys.stdout', new=StringIO()) as f:
@@ -227,7 +228,6 @@ class TestConsole(unittest.TestCase):
             self.consol.onecmd("Amenity.count()")
             self.assertEqual("0\n", f.getvalue())
 
-    @unittest.skipIf(os.getenv("HBNB_TYPE_STORAGE") == "db", "Useless in fs")
     def test_z_show(self):
         """Test alternate show command inpout"""
         with patch('sys.stdout', new=StringIO()) as f:
@@ -239,7 +239,6 @@ class TestConsole(unittest.TestCase):
             self.assertEqual(
                 "** no instance found **\n", f.getvalue())
 
-    @unittest.skipIf(os.getenv("HBNB_TYPE_STORAGE") == "db", "Useless in fs")
     def test_destroy(self):
         """Test alternate destroy command inpout"""
         with patch('sys.stdout', new=StringIO()) as f:
@@ -251,7 +250,6 @@ class TestConsole(unittest.TestCase):
             self.assertEqual(
                 "** no instance found **\n", f.getvalue())
 
-    @unittest.skipIf(os.getenv("HBNB_TYPE_STORAGE") == "db", "Useless in fs")
     def test_update(self):
         """Test alternate destroy command inpout"""
         with patch('sys.stdout', new=StringIO()) as f:

@@ -3,6 +3,10 @@
 import unittest
 import os
 from models.place import Place
+from models.state import State
+from models.city import City
+from models.user import User
+from models.amenity import Amenity
 from models.base_model import BaseModel
 import pep8
 
@@ -13,6 +17,20 @@ class TestPlace(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """set up for test"""
+        cls.user = User()
+        cls.user.email = "11@c"
+        cls.user.password = "11@c"
+        cls.user.id = "4321-dcba"
+        cls.state = State()
+        cls.state.name = "CA"
+        cls.state.id = "1234567"
+        cls.city = City()
+        cls.city.name = "LA"
+        cls.city.id = "1234-abcd"
+        cls.city.state_id = "1234567"
+        cls.amenity = Amenity()
+        cls.amenity.name = "wifi"
+        cls.amenity.id = "1324-lksdjkl"
         cls.place = Place()
         cls.place.city_id = "1234-abcd"
         cls.place.user_id = "4321-dcba"
@@ -85,6 +103,10 @@ class TestPlace(unittest.TestCase):
 
     def test_save_Place(self):
         """test if the save works"""
+        self.state.save()
+        self.city.save()
+        self.amenity.save()
+        self.user.save()
         self.place.save()
         self.assertNotEqual(self.place.created_at, self.place.updated_at)
 

@@ -8,19 +8,20 @@ import os
 
 env.hosts = ['34.74.191.132', '34.74.231.8']
 env.key_filename = "~/.ssh/holberton"
+env.user = "ubuntu"
 
 
 def do_pack():
     """ Creates a tar file from the folder web_static
     """
     a = datetime.now()
-    file_name = "versions/web_static_{}{}{}{}{}{}.tgz".\
-format(a.year if a.year > 999 else "0" + str(a.year),
-       a.month if a.month > 9 else "0" + str(a.month),
-       a.day if a.day > 9 else "0" + str(a.day),
-       a.hour if a.hour > 9 else "0" + str(a.hour),
-       a.minute if a.minute > 9 else "0" + str(a.minute),
-       a.second if a.second > 9 else "0" + str(a.second))
+    file_name = "versions/web_static_{}{}{}{}{}{}.tgz\
+".format(a.year if a.year > 999 else "0" + str(a.year),
+         a.month if a.month > 9 else "0" + str(a.month),
+         a.day if a.day > 9 else "0" + str(a.day),
+         a.hour if a.hour > 9 else "0" + str(a.hour),
+         a.minute if a.minute > 9 else "0" + str(a.minute),
+         a.second if a.second > 9 else "0" + str(a.second))
     try:
         print("Packing web_static to " + file_name)
         local("mkdir -p versions")
@@ -61,7 +62,28 @@ def do_deploy(archive_path):
 
 def do_clean(number=0):
     """
+    Cleans the current files, leaving only the n newer versions
     """
+    res = run("ls /data/web_static/releases")
+
+    number = int(number)
+    list_names = str(res).split()
+    date_list = []
+
+    for name in list_names:
+        date_list.append(int(name[11:]))
+
+    if number == 0:
+        list_names.remove("web_static_" + str(max(date_list)))
+    else:
+        for _ in range(0, number):
+            newer = max(date_list)
+            list_names.remove("web_static_" + str(newer))
+            date_list.remove(newer)
+
+    for names in list_names:
+        run("rm -Rf /data/web_static/releases/" + names)
+        local("rm -Rf versions/" + names + ".tgz")
 
 
 def deploy():

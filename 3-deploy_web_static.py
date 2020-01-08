@@ -14,12 +14,13 @@ def do_pack():
     """ Creates a tar file from the folder web_static
     """
     a = datetime.now()
-    file_name = "versions/web_static_{}{}{}{}{}{}.tgz".format(a.year,
-                                                              a.month,
-                                                              a.day,
-                                                              a.hour,
-                                                              a.minute,
-                                                              a.second)
+    file_name = "versions/web_static_{}{}{}{}{}{}.tgz\
+".format(a.year if a.year > 999 else "0" + str(a.year),
+         a.month if a.month > 9 else "0" + str(a.month),
+         a.day if a.day > 9 else "0" + str(a.day),
+         a.hour if a.hour > 9 else "0" + str(a.hour),
+         a.minute if a.minute > 9 else "0" + str(a.minute),
+         a.second if a.second > 9 else "0" + str(a.second))
     try:
         print("Packing web_static to " + file_name)
         local("mkdir -p versions")

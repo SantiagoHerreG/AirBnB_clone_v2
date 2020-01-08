@@ -3,7 +3,7 @@
 
 from fabric.api import local, put, run, env
 from datetime import datetime
-import os
+import re
 
 
 env.hosts = ['34.74.191.132', '34.74.231.8']
@@ -69,9 +69,16 @@ def do_clean(number=0):
     number = int(number)
     list_names = str(res).split()
     date_list = []
-
+    delete_list = []
+    patt1 = re.compile(r'web_static_\d{14}')
     for name in list_names:
-        date_list.append(int(name[11:]))
+        if re.fullmatch(patt1, name):
+            date_list.append(int(name[11:]))
+        else:
+            delete_list.append(name)
+
+    for elem in delete_list:
+        run("rm -Rf /data/web_static/releases/" + elem)
 
     if number == 0:
         list_names.remove("web_static_" + str(max(date_list)))
@@ -83,6 +90,17 @@ def do_clean(number=0):
 
     for names in list_names:
         run("rm -Rf /data/web_static/releases/" + names)
+
+    res = local("ls versions")
+    version_names = str(res).split()
+    delete_list = []
+    patt2 = re.compile(r'web_static_\d{14}\.tgz')
+    for name in version_names:
+        if re.fullmatch(patt2, name) is None:
+            delete_list.append(name)
+    for names in delete_list:
+        local("rm -Rf versions/" + names)
+    for names in list_names:
         local("rm -Rf versions/" + names + ".tgz")
 
 

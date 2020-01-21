@@ -21,13 +21,10 @@ def hbnb():
 
 
 @app.route('/c/<text>', strict_slashes=False)
-def show_text(text=None):
+def show_text(text):
     """Handles a request to route /c/<text>
     """
-    for letter in text:
-        if letter == "_":
-            letter = " "
-    return "C {}".format(text)
+    return "C {}".format(text.replace("_", " "))
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port='5000')

@@ -45,17 +45,17 @@ class DBStorage:
             res_list += self.__session.query(Amenity).all()
             res_list += self.__session.query(Review).all()
         else:
-            if cls == "State":
+            if cls == State:
                 res_list = list(self.__session.query(State).all())
-            if cls == "User":
+            if cls == User:
                 res_list = list(self.__session.query(User).all())
-            if cls == "Place":
+            if cls == Place:
                 res_list = list(self.__session.query(Place).all())
-            if cls == "City":
+            if cls == City:
                 res_list = list(self.__session.query(City).all())
-            if cls == "Amenity":
+            if cls == Amenity:
                 res_list = list(self.__session.query(Amenity).all())
-            if cls == "Review":
+            if cls == Review:
                 res_list = list(self.__session.query(Review).all())
 
         my_dict = {}

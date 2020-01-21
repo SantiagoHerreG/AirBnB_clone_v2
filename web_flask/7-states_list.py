@@ -6,11 +6,12 @@ from flask import Flask
 from models import storage
 from models import State
 
+
 app = Flask(__name__)
 
 
 @app.teardown_appcontext
-def teardown_context_custom(a=None):
+def teardown_context_custom(empty):
     """remove the current SQLAlchemy Session
     """
     storage.close()
@@ -26,9 +27,10 @@ def states_list():
         list_states.append((value.__dict__["name"], value.__dict__["id"]))
 
     list_states.sort()
-    
+
     return render_template('7-states_list.html', states=list_states)
 
 
 if __name__ == '__main__':
+
     app.run(host='0.0.0.0', port='5000')

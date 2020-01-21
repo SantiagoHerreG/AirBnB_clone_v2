@@ -28,7 +28,7 @@ class FileStorage:
         new_dict = {}
         if cls:
             for key, value in self.__objects.items():
-                if type(value).__name__ == cls:
+                if type(value) == cls:
                     new_dict[key] = value
             return new_dict
 
@@ -73,3 +73,8 @@ class FileStorage:
                 self.save()
             except:
                 pass
+
+    def close(self):
+        """reload() method for deserializing the JSON file to objects
+        """
+        self.reload()

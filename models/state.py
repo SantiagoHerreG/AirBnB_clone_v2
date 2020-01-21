@@ -5,6 +5,7 @@ from models.base_model import BaseModel, Base
 from models.city import City
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
+import os
 
 
 class State(BaseModel, Base):
@@ -22,8 +23,8 @@ class State(BaseModel, Base):
         equals to the current State.id
         """
         cities_dict = models.storage.all(City)
-        my_dict = {}
+        city_list = []
         for key, value in cities_dict.items():
-            if value.id == self.id:
-                my_dict[key] = value
-        return my_dict
+            if value.state_id == self.id:
+                city_list.append(value)
+        return city_list
